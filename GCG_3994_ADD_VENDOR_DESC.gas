@@ -1,0 +1,29 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+V.Local.sQuery.Declare
+
+F.Intrinsic.Control.SelectCase(V.Caller.Hook)
+	F.Intrinsic.Control.Case(17186)
+		F.Intrinsic.Control.If(V.Passed.000008,<>,"")
+			Function.ODBC.Connection!Conx.OpenConnection(Variable.ambient.PDSN,Variable.Ambient.PUSER,Variable.Ambient.PPass)
+			F.Intrinsic.String.Build("SELECT PO_DESCRIPTION FROM GCG_3994_PO_DESC WHERE PART = '{0}' AND LOCATION = '{1}'",V.Passed.000008,V.Passed.000011,V.Local.sQuery)
+			F.ODBC.Connection!Conx.OpenLocalRecordsetRO("rstGetDesc",V.Local.sQuery)
+			F.Intrinsic.Control.If(V.ODBC.Conx!rstGetDesc.EOF,<>,True)
+				V.Passed.000013.Set(V.ODBC.Conx!rstGetDesc.FieldVal!PO_DESCRIPTION)
+			F.Intrinsic.Control.EndIf
+			F.ODBC.Conx!rstGetDesc.Close
+		F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndSelect
+
+Program.Sub.Main.End
+
+Program.Sub.Comments.Start
+${$0$}$GCG_ADD_VENDOR_DESC$}$TSP$}$4/9/2015
+Program.Sub.Comments.End
+

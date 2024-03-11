@@ -1,0 +1,136 @@
+Program.Sub.ScreenSU.Start
+gui.F_VENDOR_DESC..create
+gui.F_VENDOR_DESC..caption("Vendor Description")
+gui.F_VENDOR_DESC..size(5400,4665)
+gui.F_VENDOR_DESC..position(0,0)
+gui.F_VENDOR_DESC..event(unload,f_vend_desc_unload)
+gui.F_VENDOR_DESC..alwaysontop(False)
+gui.F_VENDOR_DESC..fontname("Arial")
+gui.F_VENDOR_DESC..fontsize(8)
+gui.F_VENDOR_DESC..forecolor(0)
+gui.F_VENDOR_DESC..fontstyle(,,,,)
+gui.F_VENDOR_DESC..BackColor(-2147483633)
+gui.F_VENDOR_DESC..controlbox(True)
+gui.F_VENDOR_DESC..maxbutton(True)
+gui.F_VENDOR_DESC..minbutton(True)
+gui.F_VENDOR_DESC..mousepointer(0)
+gui.F_VENDOR_DESC..moveable(True)
+gui.F_VENDOR_DESC..sizeable(True)
+gui.F_VENDOR_DESC..ShowInTaskBar(True)
+gui.F_VENDOR_DESC..titlebar(True)
+gui.F_VENDOR_DESC.lblINstructions.create(label,"Please enter a Vendor description for part ",True,3060,255,1,110,110,True,0,Arial,8,-2147483633,0)
+gui.F_VENDOR_DESC.lblINstructions.defaultvalue("")
+gui.F_VENDOR_DESC.lblINstructions.controlgroup(0)
+gui.F_VENDOR_DESC.lblPart.create(label,"PART",True,1935,255,1,3195,100,True,0,Arial,8,-2147483633,0)
+gui.F_VENDOR_DESC.lblPart.defaultvalue("")
+gui.F_VENDOR_DESC.lblPart.controlgroup(0)
+gui.F_VENDOR_DESC.lblLengthWarning.create(label,"This description is limited to 200 characters.",True,3480,255,1,110,350,True,0,Arial,8,-2147483633,0)
+gui.F_VENDOR_DESC.lblLengthWarning.defaultvalue("")
+gui.F_VENDOR_DESC.lblLengthWarning.controlgroup(0)
+gui.F_VENDOR_DESC.mltxtDescription.create(textboxm)
+gui.F_VENDOR_DESC.mltxtDescription.text("")
+gui.F_VENDOR_DESC.mltxtDescription.visible(True)
+gui.F_VENDOR_DESC.mltxtDescription.size(4875,2940)
+gui.F_VENDOR_DESC.mltxtDescription.zorder(0)
+gui.F_VENDOR_DESC.mltxtDescription.position(115,600)
+gui.F_VENDOR_DESC.mltxtDescription.enabled(True)
+gui.F_VENDOR_DESC.mltxtDescription.alignment(0)
+gui.F_VENDOR_DESC.mltxtDescription.fontname("Arial")
+gui.F_VENDOR_DESC.mltxtDescription.fontsize(8)
+gui.F_VENDOR_DESC.mltxtDescription.maxLength(200)
+gui.F_VENDOR_DESC.mltxtDescription.BackColor(-2147483643)
+gui.F_VENDOR_DESC.mltxtDescription.defaultvalue("")
+gui.F_VENDOR_DESC.mltxtDescription.controlgroup(0)
+gui.F_VENDOR_DESC.btnCancel.create(button)
+gui.F_VENDOR_DESC.btnCancel.caption("Cancel")
+gui.F_VENDOR_DESC.btnCancel.visible(True)
+gui.F_VENDOR_DESC.btnCancel.size(1075,390)
+gui.F_VENDOR_DESC.btnCancel.zorder(0)
+gui.F_VENDOR_DESC.btnCancel.position(100,3600)
+gui.F_VENDOR_DESC.btnCancel.enabled(True)
+gui.F_VENDOR_DESC.btnCancel.fontname("Arial")
+gui.F_VENDOR_DESC.btnCancel.fontsize(8)
+gui.F_VENDOR_DESC.btnCancel.event(click,btncancel_click)
+gui.F_VENDOR_DESC.btnCancel.defaultvalue("")
+gui.F_VENDOR_DESC.btnCancel.controlgroup(0)
+gui.F_VENDOR_DESC.btnSave.create(button)
+gui.F_VENDOR_DESC.btnSave.caption("Save")
+gui.F_VENDOR_DESC.btnSave.visible(True)
+gui.F_VENDOR_DESC.btnSave.size(1075,375)
+gui.F_VENDOR_DESC.btnSave.zorder(0)
+gui.F_VENDOR_DESC.btnSave.position(3915,3600)
+gui.F_VENDOR_DESC.btnSave.enabled(True)
+gui.F_VENDOR_DESC.btnSave.fontname("Arial")
+gui.F_VENDOR_DESC.btnSave.fontsize(8)
+gui.F_VENDOR_DESC.btnSave.event(click,btnsave_click)
+gui.F_VENDOR_DESC.btnSave.defaultvalue("")
+gui.F_VENDOR_DESC.btnSave.controlgroup(0)
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SelectCase(V.Caller.Hook)
+	F.Intrinsic.Control.Case(10120)
+		V.Passed.000068.Set("Add Desc")
+	F.Intrinsic.Control.Case(10210)
+		F.Intrinsic.Control.If(V.Passed.000007,<>,"")
+			Gui.F_VENDOR_DESC.lblPart.Caption(V.Passed.000007)
+			Function.ODBC.Connection!Conx.OpenConnection(Variable.ambient.PDSN,Variable.Ambient.PUSER,Variable.Ambient.PPass)
+			Gui.F_VENDOR_DESC..Show
+		F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndSelect
+
+Program.Sub.Main.End
+
+program.sub.f_vend_desc_unload.start
+F.Intrinsic.Control.End
+
+program.sub.f_vend_desc_unload.end
+
+program.sub.btncancel_click.start
+V.Local.sMessReturn.Declare
+F.Intrinsic.Control.If(V.Screen.F_VENDOR_DESC!mltxtDescription.Text,=,"")
+	F.Intrinsic.UI.Msgbox("You have not entered a vendor description, are you sure you want to exit?","Exit Vendor Description",1,V.Local.sMessReturn)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.If(V.Local.sMessReturn,=,2)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.Else
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+
+program.sub.btncancel_click.end
+
+program.sub.btnsave_click.start
+V.Local.sQuery.Declare
+
+F.Intrinsic.Control.If(V.Screen.F_VENDOR_DESC!mltxtDescription.Text,<>,"")
+	F.Intrinsic.String.Build("SELECT * FROM GCG_3994_PO_DESC WHERE PART = '{0}' AND LOCATION = '{1}'",V.Passed.000007,V.Passed.000009,V.Local.sQuery)
+	F.ODBC.Connection!Conx.OpenLocalRecordsetRW("rstSaveDesc",V.Local.sQuery)
+	F.Intrinsic.Control.If(V.ODBC.Conx!rstSaveDesc.EOF,=,True)
+		F.ODBC.Conx!rstSaveDesc.AddNew
+	F.Intrinsic.Control.EndIf
+
+	F.ODBC.Conx!rstSaveDesc.Set!PART(V.Passed.000007)
+	F.ODBC.Conx!rstSaveDesc.Set!LOCATION(V.Passed.000009)
+	F.ODBC.Conx!rstSaveDesc.Set!PO_DESCRIPTION(V.Screen.F_VENDOR_DESC!mltxtDescription.Text)
+	F.ODBC.Conx!rstSaveDesc.Update
+
+	F.ODBC.Conx!rstSaveDesc.Close
+
+	F.Intrinsic.UI.Msgbox("This description has been saved.")
+
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+
+program.sub.btnsave_click.end
+
+Program.Sub.Comments.Start
+${$0$}$GCG_ENTER_VENDOR_DESC$}$TSP$}$4/9/2015
+Program.Sub.Comments.End
+
